@@ -8,30 +8,34 @@ function changeColor(colorstring) {
 var overs = [];
 var eles = [];
 var subEles = [];
-for (var i = 144 - 1; i >= 0; i--) {
+for (var i = 100 - 1; i >= 0; i--) {
   // an empty element
-  var ele = $('<div ' + 'id="'+ 'i'+'" class="col s1"></div>')
-  // a name for above
-  var subEle = $('<p>' + i + '</p>')
+  var ele = $('<div ' + 'id="'+ i+'" class="square left center valign-wrapper"></div>')
+  // come content in an child element
+  var subEle = $('<span class="valign">'+i+'</span>')
   ele.append(subEle)
   $('#boxes').append(ele)
 
   eles.push(ele);
   subEles.push(subEle)
 
+  var eleOver = Rx.Observable
+    .fromEvent( ele, 'mouseover')
+    .filter(parentsOnly);
 
-  var eleOver = Rx.Observable.fromEvent( ele, 'mouseover');
   overs.push(eleOver);
 }
 
+function parentsOnly(evt) {
+  // only allow parent elements on this sequence
+  return evt.target.children.length
+}
 
 var eleOverSequence = Rx.Observable.fromArray(overs)
 var eleSubs = [];
 eleOverSequence.subscribe(function(obs){
   return obs.subscribe(changeColor('red'))
 })
-
-
 
 
 eleOverSequence

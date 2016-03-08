@@ -10,5 +10,6 @@ app.publicRoot = __dirname + '/../public';
 
 app.use('/', express.static('public'));
 app.use('/node_modules', express.static('node_modules'));
+// app.use('/css', express.static('publicnode_modules'));
 
 app.listen(8000);
