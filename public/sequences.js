@@ -1,28 +1,30 @@
-function changeColor(colorstring) {
-  return function (evt) {
-    return $(evt.target).css('background-color', colorstring);
-  }
-}
 
 
+// elements
+var Elements = [];
+// child elements to element observables
+var ChildElements = [];
+// mouseover observables
 var overs = [];
-var eles = [];
-var subEles = [];
-for (var i = 100 - 1; i >= 0; i--) {
+
+/*
+// make a hundred boxes
+for (var i = 200 - 1; i >= 0; i--) {
   // an empty element
   var ele = $('<div ' + 'id="'+ i+'" class="square left center valign-wrapper"></div>')
-  // come content in an child element
-  var subEle = $('<span class="valign">'+i+'</span>')
+  // come content in a child element
+  var subEle = $('<h5 class="valign">'+i+'</h5>')
   ele.append(subEle)
   $('#boxes').append(ele)
 
-  eles.push(ele);
-  subEles.push(subEle)
+  // cache them
+  Elements.push(ele);
+  ChildElements.push(subEle)
 
   var eleOver = Rx.Observable
     .fromEvent( ele, 'mouseover')
     .filter(parentsOnly);
-
+  // cache the observable
   overs.push(eleOver);
 }
 
@@ -31,23 +33,79 @@ function parentsOnly(evt) {
   return evt.target.children.length
 }
 
-var eleOverSequence = Rx.Observable.fromArray(overs)
-var eleSubs = [];
-eleOverSequence.subscribe(function(obs){
-  return obs.subscribe(changeColor('red'))
-})
+
+*/
 
 
-eleOverSequence
-.map(function(obs){
-  return obs.delay(250)
-})
-.subscribe(function(obs){
-  eleSubs.push(obs.subscribe(changeColor('white')))
-})
+// i'm a "pretty pretty princess"
+
+
+// var count = Rx.Observable.range(0,200)
+
+// count
+//   .map(elementFromNumber)
+//   .do(appendElement)
+//   .do(cacheElements)
+//   .subscribe(observeMouseOver)
+
+// function elementFromNumber(number) {
+//   return $('<div ' + 'id="'+ number+'" class="square left center valign-wrapper"></div>')
+// }
+// function appendElement(element) {
+//   var subEle = $('<h5 class="valign">'+$(element).attr('id')+'</h5>')
+//   element.append(subEle)
+//   return $('#boxes').append(element)
+// }
+// function cacheElements(element) {
+//   return Elements.push(element);
+// }
+
+// function observeMouseOver(element) {
+//   var eleOver = Rx.Observable
+//   .fromEvent( element, 'mouseover')
+//   .filter(parentsOnly);
+//   // cache the observable
+//   return overs.push(eleOver);
+// }
 
 
 
+
+
+/* for all the observables, let's do something princesslike */
+function changeColor(colorstring) {
+  return function (evt) {
+    return $(evt.target).css('background-color', colorstring);
+  }
+}
+// var ElementMouseOverEvents = Rx.Observable.fromArray(overs)
+// var eleSubs = [];
+// ElementMouseOverEvents.subscribe(function(obs){
+//   return eleSubs.push(obs.subscribe(changeColor('red')))
+// })
+
+/*
+// in the spirit of observable sequences acting like arrays,
+   we could also do...
+
+  overs.map(subscribeFunciton)
+
+*/
+
+/* timing example */
+
+function delayObservable(observableThing){
+  // delay observable a quarter second
+  return observableThing.delay(250)
+}
+
+
+// // same sequence of ElementMouseoverEvents
+// ElementMouseOverEvents
+// .map(delayObservable)
+// .subscribe(function(obs){
+//   return eleSubs.push(obs.subscribe(changeColor('white')))
+// })
 
 
 /*
@@ -119,12 +177,10 @@ function randoms(count) {
 }
 
 
-
-function asyncPhoneCall() {
-  var resp = randoms(10000)
-  setTimeout(function(){
-    return resp;
-  }, 1500)
+function stopSubs(arrayOfSubs){
+  return Rx.Observable.from(arrayOfSubs)
+    .subscribe(function (sub) {
+      sub.dispose()
+    })
 }
-
 

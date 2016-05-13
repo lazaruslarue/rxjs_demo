@@ -3,6 +3,10 @@ body {
   width: 100%;
 }
 .square {
+  width: 5%;
+  height: calc(5vw);
+}
+#numbermachine {
   width: 10%;
-  height: calc(10vw);
+
 }
